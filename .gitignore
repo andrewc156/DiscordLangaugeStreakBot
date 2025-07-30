@@ -1,0 +1,14 @@
+# Ignore sensitive secrets directory
+secrets/discord_token.txt
+
+# Python cache and virtual environments
+__pycache__/
+.venv/
+venv/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# Database and local state
+database.json

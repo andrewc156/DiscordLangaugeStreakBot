@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  streakbot:
+    build: .
+    container_name: discord_streak_bot
+    restart: unless-stopped
+    volumes:
+      # Mount secrets directory into the container. Replace the host path with the
+      # absolute or relative location of your `secrets` folder on the host.
+      - ./secrets:/app/secrets:ro
+      # Persist the database file on the host so streaks survive container
+      # restarts. If you prefer to store it elsewhere, adjust the host path.
+      - ./database.json:/app/database.json
+    environment:
+      # Optional: set a timezone inside the container. Adjust as needed.
+      - TZ=UTC

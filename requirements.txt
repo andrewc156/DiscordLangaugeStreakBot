@@ -1,0 +1,2 @@
+# Core library to interact with Discord's API
+discord.py>=2.3.2,<3.0.0
