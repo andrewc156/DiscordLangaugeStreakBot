@@ -85,7 +85,7 @@ async def main() -> None:
     intents.guilds = True
     intents.members = True
 
-    bot = commands.Bot(command_prefix="!", intents=intents)
+    bot = commands.Bot(command_prefix="*", intents=intents)
     # Remove the default help command so we can override it
     bot.remove_command("help")
 
