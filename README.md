@@ -1,8 +1,9 @@
 # Discord Streak Bot
 
-This project implements a multi‑server **Japanese learning streak bot** for
-Discord. Users can keep track of their daily study progress simply by
-posting messages beginning with `Streak:` in a dedicated channel. The bot
+This project implements a multi‑server **learning streak bot** for
+Discord. Users can keep track of their daily progress toward *any goal*
+(e.g., language study, coding practice, fitness, writing) by posting
+messages beginning with `Streak:` in a dedicated channel. The bot
 records each user’s streak, responds with encouraging messages, and
 provides simple commands to view individual progress or the server
 leaderboard.
@@ -14,6 +15,7 @@ leaderboard.
 * **Automatic streak tracking** – Users post messages that start with
   `Streak:` and the bot automatically updates their streak for that day.
 * **Commands**:
+
   * `!set` – Set the current channel as the streak channel (admin only).
   * `!streak` – Display your current streak in the server.
   * `!leaderboard` – Show the top streaks in the server.
@@ -142,30 +144,26 @@ preserving mounted volumes, including the database file and secrets.
    the chosen channel. This tells the bot where to listen for streak
    messages.
 2. **Start your streak**: Members post a message starting with
-   `Streak:` each day they study or practice Japanese. Only one entry
+   `Streak:` each day they work toward their chosen goal. Only one entry
    per day counts toward the streak.
 3. **Check your progress**: Use `!streak` to see your current streak
    within the server.
 4. **View the leaderboard**: Use `!leaderboard` to see who has the
    longest streaks in the server.
-
 5. **Reset a streak**: Administrators can reset another member’s streak
    with `!reset @member`.
+6. **Configure role rewards**: Administrators can award roles based on
 
 6. **Unset the streak channel**: Administrators can clear the streak
    channel configuration with `!unset`. After unsetting, the bot will
    ignore streak posts until a channel is set again with `!set`.
 
-7. **Configure role rewards**: Administrators can award roles based on
-   streak length with `!addrole <days> <@role>`. For example,
-   `!addrole 10 @Dedicated` will give members the `Dedicated` role when
-   they reach a 10‑day streak. Remove a reward with
-   `!removerole <days>`, and list all rewards with `!listroles`.
 
-8. **Inactivity cleanup**: If members do not log a streak for more
-   than 7 days, any roles awarded for streaks are automatically
-   removed. Their streak counter remains and they can re‑earn roles by
-   logging streaks again.
+7. **Inactivity cleanup**: If members do not log a streak for more than
+   7 days, any roles awarded for streaks are automatically removed. Their
+   streak counter remains and they can re‑earn roles by logging streaks
+   again.
+
 
 ## Project Structure
 
@@ -189,8 +187,8 @@ discord-streak-bot/
 
 ## Contributing
 
-If you wish to extend or improve the bot, feel free to open an issue
-or submit a pull request. Suggestions and bug reports are welcome.
+If you wish to extend or improve the bot, feel free to open an issue or
+submit a pull request. Suggestions and bug reports are welcome.
 
 ## License
 
