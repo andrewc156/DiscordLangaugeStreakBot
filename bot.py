@@ -224,6 +224,20 @@ async def main() -> None:
                 f"{ctx.author.mention}, your current streak is {streak} day{'s' if streak != 1 else ''}. Keep it up!"
             )
 
+    @bot.command(name="unset", help="Unset the streak channel for this server. Admin only.")
+    @commands.has_permissions(administrator=True)
+    async def unset_channel(ctx: commands.Context) -> None:
+        guild_id = str(ctx.guild.id)
+        await streak_manager.unset_streak_channel(guild_id)
+        await ctx.send("The streak channel has been unset for this server.")
+
+    @unset_channel.error
+    async def unset_channel_error(ctx: commands.Context, error: commands.CommandError) -> None:
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You need to be an administrator to unset the streak channel.")
+        else:
+            await ctx.send("An error occurred while unsetting the streak channel.")
+
     @bot.command(name="reset", help="Admin command to reset a user's streak.")
     @commands.has_permissions(administrator=True)
     async def reset_streak(ctx: commands.Context, member: discord.Member) -> None:
@@ -316,6 +330,7 @@ async def main() -> None:
             "`!streak` – Show your current streak in this server",
             "`!leaderboard` – Show the server's streak leaderboard",
             "`!reset @user` – Reset a member's streak (admin only)",
+            "`!unset` – Unset the streak channel for this server (admin only)",
             "`!addrole <days> <@role>` – Award a role when members reach a streak of `<days>` (admin only)",
             "`!removerole <days>` – Remove the role reward for a specific streak length (admin only)",
             "`!listroles` – List configured role rewards for this server",

@@ -18,6 +18,7 @@ leaderboard.
   * `!streak` – Display your current streak in the server.
   * `!leaderboard` – Show the top streaks in the server.
   * `!reset @member` – Reset a member’s streak (admin only).
+  * `!unset` – Unset the streak channel (admin only).
   * `!addrole <days> <@role>` – Configure a role reward (admin only).
   * `!removerole <days>` – Remove a configured role reward (admin only).
   * `!listroles` – List role rewards configured for the server.
@@ -151,13 +152,17 @@ preserving mounted volumes, including the database file and secrets.
 5. **Reset a streak**: Administrators can reset another member’s streak
    with `!reset @member`.
 
-6. **Configure role rewards**: Administrators can award roles based on
+6. **Unset the streak channel**: Administrators can clear the streak
+   channel configuration with `!unset`. After unsetting, the bot will
+   ignore streak posts until a channel is set again with `!set`.
+
+7. **Configure role rewards**: Administrators can award roles based on
    streak length with `!addrole <days> <@role>`. For example,
    `!addrole 10 @Dedicated` will give members the `Dedicated` role when
    they reach a 10‑day streak. Remove a reward with
    `!removerole <days>`, and list all rewards with `!listroles`.
 
-7. **Inactivity cleanup**: If members do not log a streak for more
+8. **Inactivity cleanup**: If members do not log a streak for more
    than 7 days, any roles awarded for streaks are automatically
    removed. Their streak counter remains and they can re‑earn roles by
    logging streaks again.

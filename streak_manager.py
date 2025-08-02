@@ -103,6 +103,17 @@ class StreakManager:
             self._data["guilds"][guild_id]["streak_channel_id"] = channel_id
         await self._save_data()
 
+    async def unset_streak_channel(self, guild_id: str) -> None:
+        """Clear the streak channel configuration for a guild.
+
+        Args:
+            guild_id: The ID of the guild.
+        """
+        await self.ensure_guild(guild_id)
+        async with self._lock:
+            self._data["guilds"][guild_id]["streak_channel_id"] = None
+        await self._save_data()
+
     async def get_streak_channel(self, guild_id: str) -> Optional[str]:
         """Retrieve the streak channel ID for a guild.
 
