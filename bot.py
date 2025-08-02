@@ -29,30 +29,46 @@ from discord.ext import commands, tasks
 from streak_manager import StreakManager
 
 
-def load_token(token_path: str) -> str:
-    """Load the Discord bot token from the provided path.
+def load_token(token_path: str | None = None) -> str:
+    """Retrieve the Discord bot token.
 
-    Raises:
-        FileNotFoundError: if the token file does not exist.
-        ValueError: if the token file is empty.
+    The bot first checks the environment variable ``DISCORD_TOKEN``. If it
+    exists and is non‑empty, its value is returned. Otherwise, if
+    ``token_path`` is provided, the function attempts to read the token
+    from that file. A ``FileNotFoundError`` or ``ValueError`` is raised
+    if no token can be found.
 
     Args:
-        token_path: Path to the token text file.
+        token_path: Optional path to a token file. If ``None``, the file
+            will not be checked and only the environment variable will be
+            used.
 
     Returns:
-        The token string.
+        The Discord bot token as a string.
     """
-    if not os.path.exists(token_path):
-        raise FileNotFoundError(
-            f"Token file not found at {token_path}. Please create the file with your bot token."
-        )
-    with open(token_path, "r", encoding="utf-8") as f:
-        token = f.read().strip()
-    if not token:
-        raise ValueError(
-            f"Token file at {token_path} is empty. Place your Discord bot token in this file."
-        )
-    return token
+    # First preference: environment variable
+    env_token = os.environ.get("DISCORD_TOKEN")
+    if env_token:
+        return env_token.strip()
+
+    # Fall back to file on disk if provided
+    if token_path:
+        if not os.path.exists(token_path):
+            raise FileNotFoundError(
+                f"Token file not found at {token_path}. Please set the DISCORD_TOKEN environment variable or create the file."
+            )
+        with open(token_path, "r", encoding="utf-8") as f:
+            token = f.read().strip()
+        if not token:
+            raise ValueError(
+                f"Token file at {token_path} is empty. Provide your Discord bot token via the DISCORD_TOKEN environment variable or in this file."
+            )
+        return token
+
+    # If neither is available, raise an error
+    raise ValueError(
+        "No Discord token provided. Set the DISCORD_TOKEN environment variable or provide a token file."
+    )
 
 
 async def main() -> None:

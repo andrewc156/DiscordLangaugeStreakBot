@@ -15,3 +15,7 @@ services:
     environment:
       # Optional: set a timezone inside the container. Adjust as needed.
       - TZ=UTC
+      # Provide your Discord bot token here or use Fly.io secrets. When
+      # deploying to Fly.io, set DISCORD_TOKEN via `fly secrets set DISCORD_TOKEN=...`.
+      # Uncomment and replace with your token if running locally without the secrets file.
+      # - DISCORD_TOKEN=your-token-here

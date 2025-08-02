@@ -1,9 +1,8 @@
 # Discord Streak Bot
 
-This project implements a multi‑server **learning streak bot** for
-Discord. Users can keep track of their daily progress toward *any goal*
-(e.g., language study, coding practice, fitness, writing) by posting
-messages beginning with `Streak:` in a dedicated channel. The bot
+This project implements a multi‑server **Japanese learning streak bot** for
+Discord. Users can keep track of their daily study progress simply by
+posting messages beginning with `Streak:` in a dedicated channel. The bot
 records each user’s streak, responds with encouraging messages, and
 provides simple commands to view individual progress or the server
 leaderboard.
@@ -15,7 +14,6 @@ leaderboard.
 * **Automatic streak tracking** – Users post messages that start with
   `Streak:` and the bot automatically updates their streak for that day.
 * **Commands**:
-
   * `!set` – Set the current channel as the streak channel (admin only).
   * `!streak` – Display your current streak in the server.
   * `!leaderboard` – Show the top streaks in the server.
@@ -27,9 +25,11 @@ leaderboard.
   * `!help` – List available commands and their descriptions.
 * **Persistent storage** – All data is stored in a JSON file so that
   streaks and configuration persist across restarts.
-* **Secrets management** – The bot token is read from
-  `secrets/discord_token.txt` at runtime. This file should never be
-  committed to version control.
+* **Secrets management** – The bot token can be supplied either via an
+  environment variable (`DISCORD_TOKEN`) or read from
+  `secrets/discord_token.txt` at runtime. Both methods allow easy
+  integration with hosting providers like Fly.io. Never commit your
+  token to version control.
 * **Docker‑ready** – Includes a `Dockerfile` and `docker-compose.yml` for
   easy deployment.
 
@@ -77,13 +77,25 @@ leaderboard.
 
 4. **Configure your bot token**
 
-   Create the `secrets` directory if it does not exist and add your
-   token to `secrets/discord_token.txt`:
+   You can provide your Discord bot token in one of two ways:
 
-   ```sh
-   mkdir -p secrets
-   echo "YOUR_BOT_TOKEN_HERE" > secrets/discord_token.txt
-   ```
+   * **Environment variable** – Set the `DISCORD_TOKEN` environment
+     variable before running the bot. This method is ideal for hosted
+     environments like Fly.io where you can configure secrets via the
+     platform. For example:
+
+     ```sh
+     export DISCORD_TOKEN=YOUR_BOT_TOKEN_HERE
+     ```
+
+   * **Secrets directory** – Alternatively, create the `secrets` directory
+     (if it does not exist) and save your token in
+     `secrets/discord_token.txt`:
+
+     ```sh
+     mkdir -p secrets
+     echo "YOUR_BOT_TOKEN_HERE" > secrets/discord_token.txt
+     ```
 
    **Never** commit your token to version control. It grants full
    control over your bot.
@@ -138,32 +150,47 @@ docker compose up -d --build   # Build a new image from local source
 Docker Compose will recreate the container with the new image while
 preserving mounted volumes, including the database file and secrets.
 
+If you plan to deploy the bot on **Fly.io**, use the platform’s
+secret management to supply the token as an environment variable
+instead of mounting a file. For example, you can set the token with
+
+```sh
+fly secrets set DISCORD_TOKEN=YOUR_BOT_TOKEN_HERE
+```
+
+The bot automatically reads the `DISCORD_TOKEN` environment variable at
+runtime.
+
 ## Usage
 
 1. **Set up a streak channel**: An administrator should run `!set` in
    the chosen channel. This tells the bot where to listen for streak
    messages.
 2. **Start your streak**: Members post a message starting with
-   `Streak:` each day they work toward their chosen goal. Only one entry
+   `Streak:` each day they study or practice Japanese. Only one entry
    per day counts toward the streak.
 3. **Check your progress**: Use `!streak` to see your current streak
    within the server.
 4. **View the leaderboard**: Use `!leaderboard` to see who has the
    longest streaks in the server.
+
 5. **Reset a streak**: Administrators can reset another member’s streak
    with `!reset @member`.
-6. **Configure role rewards**: Administrators can award roles based on
 
 6. **Unset the streak channel**: Administrators can clear the streak
    channel configuration with `!unset`. After unsetting, the bot will
    ignore streak posts until a channel is set again with `!set`.
 
+7. **Configure role rewards**: Administrators can award roles based on
+   streak length with `!addrole <days> <@role>`. For example,
+   `!addrole 10 @Dedicated` will give members the `Dedicated` role when
+   they reach a 10‑day streak. Remove a reward with
+   `!removerole <days>`, and list all rewards with `!listroles`.
 
-7. **Inactivity cleanup**: If members do not log a streak for more than
-   7 days, any roles awarded for streaks are automatically removed. Their
-   streak counter remains and they can re‑earn roles by logging streaks
-   again.
-
+8. **Inactivity cleanup**: If members do not log a streak for more
+   than 7 days, any roles awarded for streaks are automatically
+   removed. Their streak counter remains and they can re‑earn roles by
+   logging streaks again.
 
 ## Project Structure
 
@@ -187,8 +214,8 @@ discord-streak-bot/
 
 ## Contributing
 
-If you wish to extend or improve the bot, feel free to open an issue or
-submit a pull request. Suggestions and bug reports are welcome.
+If you wish to extend or improve the bot, feel free to open an issue
+or submit a pull request. Suggestions and bug reports are welcome.
 
 ## License
 
