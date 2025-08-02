@@ -14,15 +14,15 @@ leaderboard.
 * **Automatic streak tracking** – Users post messages that start with
   `Streak:` and the bot automatically updates their streak for that day.
 * **Commands**:
-  * `!set` – Set the current channel as the streak channel (admin only).
-  * `!streak` – Display your current streak in the server.
-  * `!leaderboard` – Show the top streaks in the server.
-  * `!reset @member` – Reset a member’s streak (admin only).
-  * `!unset` – Unset the streak channel (admin only).
-  * `!addrole <days> <@role>` – Configure a role reward (admin only).
-  * `!removerole <days>` – Remove a configured role reward (admin only).
-  * `!listroles` – List role rewards configured for the server.
-  * `!help` – List available commands and their descriptions.
+  * `*set` – Set the current channel as the streak channel (admin only).
+  * `*streak` – Display your current streak in the server.
+  * `*leaderboard` – Show the top streaks in the server.
+  * `*reset @member` – Reset a member’s streak (admin only).
+  * `*unset` – Unset the streak channel (admin only).
+  * `*addrole <days> <@role>` – Configure a role reward (admin only).
+  * `*removerole <days>` – Remove a configured role reward (admin only).
+  * `*listroles` – List role rewards configured for the server.
+  * `*help` – List available commands and their descriptions.
 * **Persistent storage** – All data is stored in a JSON file so that
   streaks and configuration persist across restarts.
 * **Secrets management** – The bot token can be supplied either via an
@@ -163,29 +163,29 @@ runtime.
 
 ## Usage
 
-1. **Set up a streak channel**: An administrator should run `!set` in
+1. **Set up a streak channel**: An administrator should run `*set` in
    the chosen channel. This tells the bot where to listen for streak
    messages.
 2. **Start your streak**: Members post a message starting with
    `Streak:` each day they study or practice Japanese. Only one entry
    per day counts toward the streak.
-3. **Check your progress**: Use `!streak` to see your current streak
+3. **Check your progress**: Use `*streak` to see your current streak
    within the server.
-4. **View the leaderboard**: Use `!leaderboard` to see who has the
+4. **View the leaderboard**: Use `*leaderboard` to see who has the
    longest streaks in the server.
 
 5. **Reset a streak**: Administrators can reset another member’s streak
-   with `!reset @member`.
+   with `*reset @member`.
 
 6. **Unset the streak channel**: Administrators can clear the streak
-   channel configuration with `!unset`. After unsetting, the bot will
-   ignore streak posts until a channel is set again with `!set`.
+   channel configuration with `*unset`. After unsetting, the bot will
+   ignore streak posts until a channel is set again with `*set`.
 
 7. **Configure role rewards**: Administrators can award roles based on
-   streak length with `!addrole <days> <@role>`. For example,
-   `!addrole 10 @Dedicated` will give members the `Dedicated` role when
+   streak length with `*addrole <days> <@role>`. For example,
+   `*addrole 10 @Dedicated` will give members the `Dedicated` role when
    they reach a 10‑day streak. Remove a reward with
-   `!removerole <days>`, and list all rewards with `!listroles`.
+   `*removerole <days>`, and list all rewards with `*listroles`.
 
 8. **Inactivity cleanup**: If members do not log a streak for more
    than 7 days, any roles awarded for streaks are automatically

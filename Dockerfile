@@ -12,7 +12,10 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY bot.py streak_manager.py database.json README.md ./
+# Exclude the default database.json from the image so that data persists across
+# restarts via a mounted volume. The bot will create the file if it
+# doesn't exist.
+COPY bot.py streak_manager.py README.md ./
 
 # Create secrets directory placeholder (will be mounted at runtime)
 RUN mkdir -p /app/secrets

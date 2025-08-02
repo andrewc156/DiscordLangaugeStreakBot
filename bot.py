@@ -85,6 +85,7 @@ async def main() -> None:
     intents.guilds = True
     intents.members = True
 
+    # Use '*' as the command prefix instead of '!'
     bot = commands.Bot(command_prefix="*", intents=intents)
     # Remove the default help command so we can override it
     bot.remove_command("help")
@@ -342,15 +343,15 @@ async def main() -> None:
     async def help_command(ctx: commands.Context) -> None:
         help_lines = [
             "**Streak Bot Commands**",
-            "`!set` – Set this channel as the streak channel (admin only)",
-            "`!streak` – Show your current streak in this server",
-            "`!leaderboard` – Show the server's streak leaderboard",
-            "`!reset @user` – Reset a member's streak (admin only)",
-            "`!unset` – Unset the streak channel for this server (admin only)",
-            "`!addrole <days> <@role>` – Award a role when members reach a streak of `<days>` (admin only)",
-            "`!removerole <days>` – Remove the role reward for a specific streak length (admin only)",
-            "`!listroles` – List configured role rewards for this server",
-            "`!help` – Show this help message",
+            "`*set` – Set this channel as the streak channel (admin only)",
+            "`*streak` – Show your current streak in this server",
+            "`*leaderboard` – Show the server's streak leaderboard",
+            "`*reset @user` – Reset a member's streak (admin only)",
+            "`*unset` – Unset the streak channel for this server (admin only)",
+            "`*addrole <days> <@role>` – Award a role when members reach a streak of `<days>` (admin only)",
+            "`*removerole <days>` – Remove the role reward for a specific streak length (admin only)",
+            "`*listroles` – List configured role rewards for this server",
+            "`*help` – Show this help message",
         ]
         await ctx.send("\n".join(help_lines))
 
