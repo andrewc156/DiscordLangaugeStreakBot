@@ -21,6 +21,7 @@ import asyncio
 import json
 import os
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from typing import List, Tuple
 
 import discord
@@ -105,7 +106,7 @@ async def main() -> None:
     @tasks.loop(hours=24)
     async def cleanup_inactive_roles() -> None:
         """Daily task that scans for users inactive for more than a week and removes their streak roles."""
-        now = datetime.now(timezone.utc).date()
+        now = datetime.now(ZoneInfo("America/New_York"))
         # Iterate over a copy of guild IDs to avoid mutation issues
         async with streak_manager._lock:
             guild_ids = list(streak_manager._data.get("guilds", {}).keys())
@@ -179,7 +180,7 @@ async def main() -> None:
             return
 
         # Record the streak for the user
-        today = datetime.now(timezone.utc).date().isoformat()
+        today = datetime.now(ZoneInfo("America/New_York")).isoformat()
         user_id = str(message.author.id)
         streak_count = await streak_manager.record_streak(guild_id, user_id, today)
 
