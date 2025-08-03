@@ -3,8 +3,9 @@ Streak management module.
 
 This module encapsulates reading and writing streak data to persistent
 storage. Each guild can define its own streak channel and maintain its
-own set of user streaks. Data is stored in a JSON file on disk. The
-structure of the JSON file resembles::
+own set of user streaks. Data is stored either in a JSON file on disk or
+in an S3 object when running with Bucketeer on Heroku. The structure of
+the stored JSON resembles::
 
     {
         "guilds": {
@@ -35,43 +36,84 @@ import json
 import os
 from typing import Dict, List, Optional, Tuple
 
+import boto3
+from botocore.exceptions import ClientError
+
 
 class StreakManager:
     """Encapsulates reading, writing, and updating streak data."""
 
     def __init__(self, file_path: str) -> None:
+        # ``file_path`` represents a local file path when running without
+        # Bucketeer and an object key when using S3.
         self.file_path = file_path
         self._data: Dict[str, Dict] = {}
         self._lock = asyncio.Lock()
+        # Detect Bucketeer/S3 configuration from environment variables.
+        self.bucket_name = os.environ.get("BUCKETEER_BUCKET_NAME")
+        self.s3_client = None
+        if self.bucket_name:
+            self.s3_client = boto3.client(
+                "s3",
+                region_name=os.environ.get("BUCKETEER_AWS_REGION"),
+                aws_access_key_id=os.environ.get("BUCKETEER_AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=os.environ.get("BUCKETEER_AWS_SECRET_ACCESS_KEY"),
+            )
 
     async def load_data(self) -> None:
-        """Load streak data from the JSON file.
+        """Load streak data from persistent storage.
 
-        If the file does not exist, it will be created on the first
-        save. If the file contains invalid JSON, an empty data
-        structure is used and the original file is left untouched.
+        When Bucketeer environment variables are present, data is loaded
+        from the configured S3 bucket. Otherwise, a local JSON file is
+        used. If no data exists yet, an empty structure is initialised.
         """
         async with self._lock:
+            if self.s3_client and self.bucket_name:
+                try:
+                    obj = self.s3_client.get_object(
+                        Bucket=self.bucket_name, Key=self.file_path
+                    )
+                    body = obj["Body"].read()
+                    self._data = json.loads(body.decode("utf-8"))
+                    if (
+                        "guilds" not in self._data
+                        or not isinstance(self._data["guilds"], dict)
+                    ):
+                        self._data = {"guilds": {}}
+                except self.s3_client.exceptions.NoSuchKey:
+                    self._data = {"guilds": {}}
+                except (ClientError, json.JSONDecodeError, UnicodeDecodeError):
+                    self._data = {"guilds": {}}
+                return
+
+            # Fallback to local file storage
             if not os.path.exists(self.file_path):
-                # initialise base structure
                 self._data = {"guilds": {}}
                 return
             try:
                 with open(self.file_path, "r", encoding="utf-8") as f:
                     self._data = json.load(f)
-                # Ensure keys exist
-                if "guilds" not in self._data or not isinstance(self._data["guilds"], dict):
+                if "guilds" not in self._data or not isinstance(
+                    self._data["guilds"], dict
+                ):
                     self._data = {"guilds": {}}
             except (json.JSONDecodeError, OSError):
                 self._data = {"guilds": {}}
 
     async def _save_data(self) -> None:
-        """Write the in-memory data back to disk."""
-        # Acquire lock to ensure exclusive access to _data during write
+        """Write the in-memory data back to persistent storage."""
         async with self._lock:
-            # Make sure directory exists
+            if self.s3_client and self.bucket_name:
+                data_bytes = json.dumps(
+                    self._data, ensure_ascii=False, indent=2
+                ).encode("utf-8")
+                self.s3_client.put_object(
+                    Bucket=self.bucket_name, Key=self.file_path, Body=data_bytes
+                )
+                return
+
+            # Fallback to local file storage
             os.makedirs(os.path.dirname(self.file_path) or ".", exist_ok=True)
-            # Write to a temporary file and atomically replace the original
             tmp_path = self.file_path + ".tmp"
             with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump(self._data, f, ensure_ascii=False, indent=2)

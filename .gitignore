@@ -10,5 +10,5 @@ venv/
 *.py[cod]
 *$py.class
 
-# Database and local state
+# Database and local state (local fallback only)
 database.json

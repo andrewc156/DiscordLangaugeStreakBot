@@ -23,7 +23,8 @@ leaderboard.
   * `*removerole <days>` – Remove a configured role reward (admin only).
   * `*listroles` – List role rewards configured for the server.
   * `*help` – List available commands and their descriptions.
-* **Persistent storage** – All data is stored in a JSON file so that
+* **Persistent storage** – Streak data is stored in an S3 bucket via
+  Bucketeer (or a local `database.json` file for development) so that
   streaks and configuration persist across restarts.
 * **Secrets management** – The bot token can be supplied either via an
   environment variable (`DISCORD_TOKEN`) or read from
@@ -109,6 +110,13 @@ leaderboard.
 The bot will connect to Discord and begin listening for streak messages
 and commands.
 
+When the environment variables `BUCKETEER_AWS_ACCESS_KEY_ID`,
+`BUCKETEER_AWS_REGION`, `BUCKETEER_AWS_SECRET_ACCESS_KEY`, and
+`BUCKETEER_BUCKET_NAME` are present (for example on Heroku with the
+Bucketeer add-on), streak data is stored in the referenced S3 bucket. If
+these variables are absent, the bot falls back to a local
+`database.json` file for storage.
+
 ### Docker Deployment
 
 To deploy the bot using Docker, you can use the provided
@@ -148,7 +156,9 @@ docker compose up -d --build   # Build a new image from local source
 ```
 
 Docker Compose will recreate the container with the new image while
-preserving mounted volumes, including the database file and secrets.
+preserving mounted volumes such as the secrets directory. Streak data is
+stored in S3 when Bucketeer credentials are provided, or in a local
+`database.json` file if running without them.
 
 If you plan to deploy the bot on **Fly.io**, use the platform’s
 secret management to supply the token as an environment variable
@@ -199,7 +209,7 @@ discord-streak-bot/
 │
 ├─ bot.py                # Main bot logic and command definitions
 ├─ streak_manager.py     # Persistence layer for streaks and server configs
-├─ database.json         # JSON storage for all guilds’ streak data
+├─ database.json         # Local fallback storage for streak data
 ├─ requirements.txt       # Python dependencies
 │
 ├─ Dockerfile
