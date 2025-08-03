@@ -1,0 +1,6 @@
+build:
+  docker:
+    worker: Dockerfile     # tells Heroku to build the image in your repo root
+
+run:
+  worker: python bot.py    # identical to CMD in your Dockerfile
