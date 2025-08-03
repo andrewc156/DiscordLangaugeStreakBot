@@ -1,2 +1,6 @@
 # Core library to interact with Discord's API
 discord.py>=2.3.2,<3.0.0
+
+# AWS SDK for Python to interact with Bucketeer (S3)
+boto3>=1.28.0,<2.0.0
+
