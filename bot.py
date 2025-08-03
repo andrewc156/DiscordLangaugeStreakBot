@@ -106,7 +106,7 @@ async def main() -> None:
     @tasks.loop(hours=24)
     async def cleanup_inactive_roles() -> None:
         """Daily task that scans for users inactive for more than a week and removes their streak roles."""
-        now = datetime.now(ZoneInfo("America/New_York"))
+        now = datetime.now(ZoneInfo("America/New_York")).date()
         # Iterate over a copy of guild IDs to avoid mutation issues
         async with streak_manager._lock:
             guild_ids = list(streak_manager._data.get("guilds", {}).keys())
@@ -128,17 +128,20 @@ async def main() -> None:
                 if not last_date:
                     continue
                 try:
-                    from datetime import date
-                    last = date.fromisoformat(last_date)
+                    last = datetime.fromisoformat(last_date).date()
                     diff = (now - last).days
-                except Exception:
+                except ValueError:
                     continue
                 if diff > 7:
                     member = guild_obj.get_member(int(user_id))
                     if not member:
                         continue
                     # Remove all reward roles the member currently has
-                    roles_to_remove = [guild_obj.get_role(rid) for rid in role_ids if guild_obj.get_role(rid) in member.roles]
+                    roles_to_remove = [
+                        guild_obj.get_role(rid)
+                        for rid in role_ids
+                        if guild_obj.get_role(rid) in member.roles
+                    ]
                     if roles_to_remove:
                         try:
                             await member.remove_roles(*roles_to_remove, reason="Streak inactivity")
