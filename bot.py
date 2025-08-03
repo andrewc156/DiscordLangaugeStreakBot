@@ -180,7 +180,7 @@ async def main() -> None:
             return
 
         # Record the streak for the user
-        today = datetime.now(ZoneInfo("America/New_York")).isoformat()
+        today = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
         user_id = str(message.author.id)
         streak_count = await streak_manager.record_streak(guild_id, user_id, today)
 
