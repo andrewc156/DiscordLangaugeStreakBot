@@ -87,7 +87,7 @@ async def main() -> None:
     intents.members = True
 
     # Use '*' as the command prefix instead of '!'
-    bot = commands.Bot(command_prefix="*", intents=intents)
+    bot = commands.Bot(command_prefix="*", intents=intents, case_insensitive=True)
     # Remove the default help command so we can override it
     bot.remove_command("help")
 
@@ -326,7 +326,7 @@ async def main() -> None:
         await ctx.send("**Role Rewards:**\n" + "\n".join(lines))
 
 
-    @bot.command(name="leaderboard", help="Show the streak leaderboard for this server.")
+    @bot.command(name="leaderboard", aliases=["lb", ], help="Show the streak leaderboard for this server.")
     async def leaderboard(ctx: commands.Context) -> None:
         guild_id = str(ctx.guild.id)
         leaderboard_data: List[Tuple[str, int]] = await streak_manager.get_leaderboard(guild_id)
